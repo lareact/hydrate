@@ -1,0 +1,27 @@
+{
+  "name": "z-golly/hydrate",
+  "description": "entity 基础分装",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "jonathan",
+      "email": "jianyang1209@outlook.com"
+    }
+  ],
+  "require": {
+    "php": "^7.3|^8.0",
+    "doctrine/annotations": "^1.11"
+  },
+  "require-dev": {},
+  "autoload": {
+    "psr-4": {
+      "Golly\\Hydrate\\": "src/"
+    }
+  },
+  "extra": {},
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
+}
