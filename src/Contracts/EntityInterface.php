@@ -23,27 +23,27 @@ interface EntityInterface
 
     /**
      * @param callable|null $filter
-     * @return mixed
+     * @return array
      */
     public function toArray(callable $filter = null);
 
     /**
      * @param array $keys
      * @param callable|null $filter
-     * @return mixed
+     * @return array
      */
     public function except(array $keys, callable $filter = null);
 
     /**
      * @param array $keys
      * @param callable|null $filter
-     * @return mixed
+     * @return array
      */
     public function only(array $keys, callable $filter = null);
 
     /**
      * @param string|null $key
-     * @return array|string
+     * @return mixed
      */
     public function getOriginal($key = null);
 

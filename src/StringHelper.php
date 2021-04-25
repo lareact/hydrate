@@ -1,34 +1,36 @@
 <?php
 
 
-namespace Golly\Hydrate\Helpers;
+namespace Golly\Hydrate;
+
 
 /**
- * Class StrHelper
- * @package Golly\Hydrate\Helpers
+ * Trait StringHelper
+ * @package Golly\Hydrate
  */
-class StrHelper
+class StringHelper
 {
     /**
      * The cache of snake-cased words.
      *
      * @var array
      */
-    protected static $snakeCache = [];
+    protected static $snakes = [];
 
     /**
      * The cache of camel-cased words.
      *
      * @var array
      */
-    protected static $camelCache = [];
+    protected static $camels = [];
 
     /**
      * The cache of studly-cased words.
      *
      * @var array
      */
-    protected static $studlyCache = [];
+    protected static $studlies = [];
+
 
     /**
      * Convert a value to studly caps case.
@@ -40,13 +42,13 @@ class StrHelper
     {
         $key = $value;
 
-        if (isset(static::$studlyCache[$key])) {
-            return static::$studlyCache[$key];
+        if (isset(static::$studlies[$key])) {
+            return static::$studlies[$key];
         }
 
         $value = ucwords(str_replace(['-', '_'], ' ', $value));
 
-        return static::$studlyCache[$key] = str_replace(' ', '', $value);
+        return static::$studlies[$key] = str_replace(' ', '', $value);
     }
 
     /**
@@ -57,11 +59,11 @@ class StrHelper
      */
     public static function camel(string $value)
     {
-        if (isset(static::$camelCache[$value])) {
-            return static::$camelCache[$value];
+        if (isset(static::$camels[$value])) {
+            return static::$camels[$value];
         }
 
-        return static::$camelCache[$value] = lcfirst(static::studly($value));
+        return static::$camels[$value] = lcfirst(static::studly($value));
     }
 
 
@@ -86,8 +88,8 @@ class StrHelper
     public static function snake(string $value, $delimiter = '_')
     {
         $key = $value;
-        if (isset(static::$snakeCache[$key][$delimiter])) {
-            return static::$snakeCache[$key][$delimiter];
+        if (isset(static::$snakes[$key][$delimiter])) {
+            return static::$snakes[$key][$delimiter];
         }
 
         if (!ctype_lower($value)) {
@@ -96,6 +98,6 @@ class StrHelper
             $value = static::lower(preg_replace('/(.)(?=[A-Z])/u', '$1' . $delimiter, $value));
         }
 
-        return static::$snakeCache[$key][$delimiter] = $value;
+        return static::$snakes[$key][$delimiter] = $value;
     }
 }

@@ -3,7 +3,6 @@
 namespace Golly\Hydrate;
 
 use Golly\Hydrate\Contracts\EntityInterface;
-use Golly\Hydrate\Helpers\ArrHelper;
 
 
 /**
@@ -29,24 +28,28 @@ class Entity implements EntityInterface
 
     /**
      * @param array $data
+     * @param bool $original
      * @return EntityInterface|static
      */
-    public static function instance(array $data)
+    public static function instance(array $data, $original = true)
     {
-        return (new static())->toObject($data);
+        return (new static())->toObject($data, $original);
     }
 
     /**
      * array to this object
      *
      * @param array $data
+     * @param bool $original
      * @return EntityInterface|static
      */
-    public function toObject(array $data)
+    public function toObject(array $data, $original = true)
     {
-        $this->original = $data;
+        if ($original) {
+            $this->original = $data;
+        }
 
-        return $this->getReflection()->hydrate($data, $this);
+        return $this->newReflection()->hydrate($data, $this);
     }
 
 
@@ -57,7 +60,7 @@ class Entity implements EntityInterface
     public function toArray(callable $filter = null)
     {
         if (!$this->array) {
-            $this->array = $this->getReflection()->extract($this, $this->format);
+            $this->array = $this->newReflection()->extract($this, $this->format);
         }
         if (is_null($filter)) {
             return $this->array;
@@ -69,44 +72,40 @@ class Entity implements EntityInterface
     /**
      * @param array $keys
      * @param callable|null $filter
-     * @return array|mixed
+     * @return array
      */
     public function except(array $keys, callable $filter = null)
     {
-        return ArrHelper::except($this->toArray($filter), $keys);
+        return ArrayHelper::except($this->toArray($filter), $keys);
     }
 
 
     /**
      * @param array $keys
      * @param callable|null $filter
-     * @return array|mixed
+     * @return array
      */
     public function only(array $keys, callable $filter = null)
     {
-        return ArrHelper::only($this->toArray($filter), $keys);
+        return ArrayHelper::only($this->toArray($filter), $keys);
     }
 
 
     /**
      * @param null $key
      * @param null $default
-     * @return array|string
+     * @return mixed
      */
     public function getOriginal($key = null, $default = null)
     {
-        if ($key) {
-            return ArrHelper::get($this->original, $key, $default);
-        }
-
-        return $this->original;
+        return ArrayHelper::get($this->original, $key, $default);
     }
 
     /**
      * @return Reflection
      */
-    protected function getReflection()
+    protected function newReflection()
     {
-        return app(Reflection::class);
+        return new Reflection();
     }
 }

@@ -1,15 +1,16 @@
 <?php
 
 
-namespace Golly\Hydrate\Helpers;
+namespace Golly\Hydrate;
+
 
 use ArrayAccess;
 
 /**
- * Class ArrHelper
- * @package Golly\Hydrate\Helpers
+ * Class ArrayHelper
+ * @package Golly\Hydrate
  */
-class ArrHelper
+class ArrayHelper
 {
     /**
      * Determine whether the given value is array accessible.
@@ -88,7 +89,7 @@ class ArrHelper
      * @param mixed $default
      * @return mixed
      */
-    public static function get($array, $key, $default = null)
+    public static function get(array $array, $key, $default = null)
     {
         if (!static::accessible($array)) {
             return value($default);

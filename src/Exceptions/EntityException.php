@@ -1,14 +1,16 @@
 <?php
 
+
 namespace Golly\Hydrate\Exceptions;
+
 
 use Exception;
 
 /**
- * Class MethodNotFoundException
+ * Class EntityException
  * @package Golly\Hydrate\Exceptions
  */
-class MethodNotFoundException extends Exception
+class EntityException extends Exception
 {
 
 }
