@@ -3,7 +3,7 @@
 namespace Golly\Hydrate;
 
 use Doctrine\Common\Annotations\AnnotationReader;
-use Golly\Hydrate\Annotations\Mapping;
+use Golly\Hydrate\Annotations\Source;
 use Golly\Hydrate\Contracts\EntityInterface;
 use ReflectionClass;
 use ReflectionProperty;
@@ -36,8 +36,8 @@ class Reflection
         $annotationReader = new AnnotationReader();
         foreach ($reflectProperties as $name => $property) {
             $defaultValue = $property->getValue($entity);
-            $column = $annotationReader->getPropertyAnnotation($property, Mapping::class);
-            if ($column instanceof Mapping) { // 映射关系
+            $column = $annotationReader->getPropertyAnnotation($property, Source::class);
+            if ($column instanceof Source) { // 映射关系
                 $value = ArrayHelper::get($data, $column->field, $defaultValue);
             } else {
                 $value = ArrayHelper::get($data, $name, $defaultValue);

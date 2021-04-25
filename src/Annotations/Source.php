@@ -3,11 +3,11 @@
 namespace Golly\Hydrate\Annotations;
 
 /**
- * Class Mapping
+ * Class Source
  * @package Golly\Hydrate\Annotations
  * @Annotation
  */
-final class Mapping
+final class Source
 {
     /**
      * field name of source
