@@ -90,8 +90,12 @@ class ArrayHelper
      * @param mixed|null $default
      * @return mixed
      */
-    public static function get(array $array, int|string $key, mixed $default = null): mixed
+    public static function get(array $array, mixed $key = null, mixed $default = null): mixed
     {
+        if (is_null($key)) {
+            return $array;
+        }
+
         if (static::exists($array, $key)) {
             return $array[$key];
         }
