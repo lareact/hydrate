@@ -99,6 +99,10 @@ class Entity implements EntityInterface
      */
     public function getOriginal(string $key = null): mixed
     {
+        if (is_null($key)) {
+            return $this->original;
+        }
+
         return ArrayHelper::get($this->original, $key);
     }
 }

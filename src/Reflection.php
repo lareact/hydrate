@@ -35,7 +35,7 @@ class Reflection implements ReflectionInterface
      */
     public static function hydrate(array $data, EntityInterface $entity): EntityInterface
     {
-        $reflectProperties = static::getReflectProperties($entity);
+        $reflectProperties = self::getReflectProperties($entity);
         $annotationReader = new AnnotationReader();
         foreach ($reflectProperties as $name => $property) {
             $defaultValue = $property->getValue($entity);
@@ -96,20 +96,20 @@ class Reflection implements ReflectionInterface
      * @param EntityInterface $entity
      * @return ReflectionProperty[]
      */
-    protected static function getReflectProperties(EntityInterface $entity): mixed
+    protected static function getReflectProperties(EntityInterface $entity): array
     {
         $key = get_class($entity);
         if (isset(static::$reflectProperties[$key])) {
             return static::$reflectProperties[$key];
         }
-
+        $properties = [];
         $reflectProperties = (new ReflectionClass($entity))->getProperties(ReflectionProperty::IS_PUBLIC);
-
         foreach ($reflectProperties as $property) {
             $property->setAccessible(true);
-            static::$reflectProperties[$key][$property->getName()] = $property;
+            $properties[$property->getName()] = $property;
         }
+        static::$reflectProperties[$key] = $properties;
 
-        return static::$reflectProperties[$key];
+        return $properties;
     }
 }
