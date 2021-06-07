@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Golly\Hydrate;
 
@@ -14,24 +15,24 @@ class Entity implements EntityInterface
     /**
      * @var array
      */
-    protected $original = [];
+    protected array $original = [];
 
     /**
      * @var array
      */
-    protected $array = [];
+    protected array $array = [];
 
     /**
      * @var string
      */
-    protected $format = 'snake';
+    protected string $format = 'snake';
 
     /**
      * @param array $data
      * @param bool $original
-     * @return EntityInterface|static
+     * @return static
      */
-    public static function instance(array $data, $original = true)
+    public static function instance(array $data, bool $original = true): static
     {
         return (new static())->toObject($data, $original);
     }
@@ -41,15 +42,16 @@ class Entity implements EntityInterface
      *
      * @param array $data
      * @param bool $original
-     * @return EntityInterface|static
+     * @return static
      */
-    public function toObject(array $data, $original = true)
+    public function toObject(array $data, bool $original = true): static
     {
         if ($original) {
             $this->original = $data;
         }
+        Reflection::hydrate($data, $this);
 
-        return $this->newReflection()->hydrate($data, $this);
+        return $this;
     }
 
 
@@ -57,16 +59,16 @@ class Entity implements EntityInterface
      * @param callable|null $filter
      * @return array
      */
-    public function toArray(callable $filter = null)
+    public function toArray(callable $filter = null): array
     {
         if (!$this->array) {
-            $this->array = $this->newReflection()->extract($this, $this->format);
+            $this->array = Reflection::extract($this, $this->format);
         }
         if (is_null($filter)) {
             return $this->array;
         }
 
-        return $filter($this->array);
+        return (array)$filter($this->array);
     }
 
     /**
@@ -74,7 +76,7 @@ class Entity implements EntityInterface
      * @param callable|null $filter
      * @return array
      */
-    public function except(array $keys, callable $filter = null)
+    public function except(array $keys, callable $filter = null): array
     {
         return ArrayHelper::except($this->toArray($filter), $keys);
     }
@@ -85,27 +87,18 @@ class Entity implements EntityInterface
      * @param callable|null $filter
      * @return array
      */
-    public function only(array $keys, callable $filter = null)
+    public function only(array $keys, callable $filter = null): array
     {
         return ArrayHelper::only($this->toArray($filter), $keys);
     }
 
 
     /**
-     * @param null $key
-     * @param null $default
+     * @param string|null $key
      * @return mixed
      */
-    public function getOriginal($key = null, $default = null)
+    public function getOriginal(string $key = null): mixed
     {
-        return ArrayHelper::get($this->original, $key, $default);
-    }
-
-    /**
-     * @return Reflection
-     */
-    protected function newReflection()
-    {
-        return new Reflection();
+        return ArrayHelper::get($this->original, $key);
     }
 }

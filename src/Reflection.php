@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Golly\Hydrate;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Golly\Hydrate\Annotations\Source;
 use Golly\Hydrate\Contracts\EntityInterface;
+use Golly\Hydrate\Contracts\ReflectionInterface;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -15,13 +18,13 @@ use ReflectionProperty;
  * Class Reflection
  * @package Golly\Hydrate
  */
-class Reflection
+class Reflection implements ReflectionInterface
 {
 
     /**
      * @var array
      */
-    protected static $reflectProperties = [];
+    protected static array $reflectProperties = [];
 
     /**
      * 将数组赋值到对象
@@ -30,9 +33,9 @@ class Reflection
      * @param EntityInterface $entity
      * @return EntityInterface
      */
-    public function hydrate(array $data, EntityInterface $entity)
+    public static function hydrate(array $data, EntityInterface $entity): EntityInterface
     {
-        $reflectProperties = $this->getReflectProperties($entity);
+        $reflectProperties = static::getReflectProperties($entity);
         $annotationReader = new AnnotationReader();
         foreach ($reflectProperties as $name => $property) {
             $defaultValue = $property->getValue($entity);
@@ -56,7 +59,7 @@ class Reflection
      * @param string $format
      * @return array
      */
-    public function extract(EntityInterface $entity, $format = 'snake')
+    public static function extract(EntityInterface $entity, string $format = 'snake'): array
     {
         $result = [];
         $properties = self::getReflectProperties($entity);
@@ -66,27 +69,21 @@ class Reflection
                 $arrValue = [];
                 foreach ($value as $key => $item) {
                     if ($item instanceof EntityInterface) {
-                        $arrValue[$key] = $this->extract($item, $format);
+                        $arrValue[$key] = static::extract($item, $format);
                     } else {
                         $arrValue[$key] = $item;
                     }
                 }
                 $value = $arrValue;
             } elseif ($value instanceof EntityInterface) {
-                $value = $this->extract($value, $format);
+                $value = static::extract($value, $format);
             }
             // 格式转化
-            switch ($format) {
-                case 'camel':
-                    $name = StringHelper::camel($name);
-                    break;
-                case 'studly':
-                    $name = StringHelper::studly($name);
-                    break;
-                default:
-                    $name = StringHelper::snake($name);
-                    break;
-            }
+            $name = match ($format) {
+                'camel' => StringHelper::camel($name),
+                'studly' => StringHelper::studly($name),
+                default => StringHelper::snake($name),
+            };
             $result[$name] = $value;
         }
 
@@ -97,9 +94,9 @@ class Reflection
      * 获取要转化对象的属性
      *
      * @param EntityInterface $entity
-     * @return ReflectionProperty[]|mixed
+     * @return ReflectionProperty[]
      */
-    protected function getReflectProperties(EntityInterface $entity)
+    protected static function getReflectProperties(EntityInterface $entity): mixed
     {
         $key = get_class($entity);
         if (isset(static::$reflectProperties[$key])) {

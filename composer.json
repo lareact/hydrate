@@ -9,8 +9,8 @@
         }
     ],
     "require": {
-        "php": "^7.3|^8.0",
-        "doctrine/annotations": "^1.11"
+        "php": "^8.0",
+        "doctrine/annotations": "^1.13"
     },
     "require-dev": {},
     "autoload": {

@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Golly\Hydrate;
 
@@ -18,7 +19,7 @@ class ArrayHelper
      * @param mixed $value
      * @return bool
      */
-    public static function accessible($value)
+    public static function accessible(mixed $value): bool
     {
         return is_array($value) || $value instanceof ArrayAccess;
     }
@@ -27,10 +28,10 @@ class ArrayHelper
      * Determine if the given key exists in the provided array.
      *
      * @param array $array
-     * @param string|int $key
+     * @param int|string $key
      * @return bool
      */
-    public static function exists(array $array, $key)
+    public static function exists(array $array, int|string $key): bool
     {
         if ($array instanceof ArrayAccess) {
             return $array->offsetExists($key);
@@ -46,7 +47,7 @@ class ArrayHelper
      * @param array $keys
      * @return void
      */
-    public static function forget(array &$array, array $keys)
+    public static function forget(array &$array, array $keys): void
     {
         $original = &$array;
 
@@ -85,25 +86,17 @@ class ArrayHelper
      * Get an item from an array using "dot" notation.
      *
      * @param array $array
-     * @param string|int|null $key
-     * @param mixed $default
+     * @param int|string $key
+     * @param mixed|null $default
      * @return mixed
      */
-    public static function get(array $array, $key, $default = null)
+    public static function get(array $array, int|string $key, mixed $default = null): mixed
     {
-        if (!static::accessible($array)) {
-            return value($default);
-        }
-
-        if (is_null($key)) {
-            return $array;
-        }
-
         if (static::exists($array, $key)) {
             return $array[$key];
         }
 
-        if (strpos($key, '.') === false) {
+        if (!str_contains($key, '.')) {
             return $array[$key] ?? value($default);
         }
 
@@ -125,7 +118,7 @@ class ArrayHelper
      * @param array $keys
      * @return array
      */
-    public static function except(array $array, array $keys)
+    public static function except(array $array, array $keys): array
     {
         static::forget($array, $keys);
 
@@ -139,7 +132,7 @@ class ArrayHelper
      * @param array $keys
      * @return array
      */
-    public static function only(array $array, array $keys)
+    public static function only(array $array, array $keys): array
     {
         return array_intersect_key($array, array_flip($keys));
     }

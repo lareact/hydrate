@@ -1,5 +1,6 @@
 <?php
 
+declare(strict_types=1);
 
 namespace Golly\Hydrate;
 
@@ -15,21 +16,21 @@ class StringHelper
      *
      * @var array
      */
-    protected static $snakes = [];
+    protected static array $snakes = [];
 
     /**
      * The cache of camel-cased words.
      *
      * @var array
      */
-    protected static $camels = [];
+    protected static array $camels = [];
 
     /**
      * The cache of studly-cased words.
      *
      * @var array
      */
-    protected static $studlies = [];
+    protected static array $studlies = [];
 
 
     /**
@@ -38,7 +39,7 @@ class StringHelper
      * @param string $value
      * @return string
      */
-    public static function studly(string $value)
+    public static function studly(string $value): string
     {
         $key = $value;
 
@@ -57,7 +58,7 @@ class StringHelper
      * @param string $value
      * @return string
      */
-    public static function camel(string $value)
+    public static function camel(string $value): string
     {
         if (isset(static::$camels[$value])) {
             return static::$camels[$value];
@@ -73,7 +74,7 @@ class StringHelper
      * @param string $value
      * @return string
      */
-    public static function lower(string $value)
+    public static function lower(string $value): string
     {
         return mb_strtolower($value, 'UTF-8');
     }
@@ -85,7 +86,7 @@ class StringHelper
      * @param string $delimiter
      * @return string
      */
-    public static function snake(string $value, $delimiter = '_')
+    public static function snake(string $value, string $delimiter = '_'): string
     {
         $key = $value;
         if (isset(static::$snakes[$key][$delimiter])) {

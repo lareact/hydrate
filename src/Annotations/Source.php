@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Golly\Hydrate\Annotations;
 
@@ -14,5 +15,5 @@ final class Source
      *
      * @var string
      */
-    public $field;
+    public string $field;
 }
