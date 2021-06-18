@@ -101,4 +101,15 @@ class Entity implements EntityInterface
     {
         return ArrayHelper::get($this->original, $key);
     }
+
+    /**
+     * @param string $format
+     * @return $this
+     */
+    public function setFormat(string $format): static
+    {
+        $this->format = $format;
+
+        return $this;
+    }
 }
